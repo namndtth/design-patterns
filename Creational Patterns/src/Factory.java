@@ -1,61 +1,78 @@
-// Goal: create objects
-// Benefits:
-// If there are multiple clients that want to instantiate the same set of
-// classes, then by using a Factory object, you have cut out redundant
-// code and made the software easier to modify.
+// Let me show you how we can use the factory pattern
+// Factory method is just a member of the point class
 
-// Factory method
-// The factory method design intent is to to define an interface for creating objects,
-// but the subclasses decide which class to instantiate.
-class Knife
+class Point
 {
-    void sharpen(){}
-    void polish(){}
-    void pk(){}
-}
-class SteakKnife extends Knife {}
-class ChefsKnife extends Knife {}
+    private double x, y;
 
-class BudgetChefsKnife extends Knife {}
-class BudgetSteakKnife extends Knife {}
-
-class KnifeFactory
-{
-    public  Knife createKnife(String knifeType)
+    private Point(double x, double y)
     {
-        Knife knife = null;
-
-        // create Knife object
-        if (knifeType.equals("steak"))
-            knife = new SteakKnife();
-        else if (knifeType.equals("chefs"))
-            knife = new ChefsKnife();
-
-        return knife;
+        this.x = x;
+        this.y = y;
     }
-}
-// we cannot instantiate KnifeStore, instead, we'll need to have knife store sub-classes.
-abstract class KnifeStore
-{
-    private KnifeFactory factory;
-    //
-    public abstract Knife orderKnife(String knifeType);
-}
-
-class BudgetKnifeStore extends KnifeStore
-{
-    Knife createKnife(String knifeType)
+    // Dedicate a class for the purpose of create of points
+    public static class Factory
     {
-        if (knifeType.equals("steak"))
-            return new BudgetSteakKnife();
-        else if (knifeType.equals("chefs"))
-            return new BudgetChefsKnife();
+        public static Point newCartesianPoint(double x, double y)
+        {
+            return new Point(x, y);
+        }
 
-        else return null;
-    }
-
-    @Override
-    public Knife orderKnife(String knifeType) {
-        return null;
+        public static Point newPolarPoint(double rho, double theta)
+        {
+            return new Point(rho * Math.cos(theta), rho*Math.sin(theta));
+        }
     }
 }
+// This is not allowed
+//class Point
+//{
+//    private double x, y;
+//
+//    public Point(double x, double y)
+//    {
+//        this.x = x;
+//        this.y = y;
+//    }
+//
+//    public Point(double rho, double theta)
+//    {
+//        x = rho * Math.cos(theta);
+//        y = rho * Math.sin(theta);
+//    }
+//}
+
+// We specify the different coordinate systems in our case using ENUM
+// This is ugly :))
+// User might guest what a and b are.
+//enum CoordinateSystem
+//{
+//    CARTESIAN,
+//    POLAR
+//}
+//class Point
+//{
+//    private double x, y;
+//
+//    /**
+//     * We might add documents to specify a and b
+//     * @param a is x if cartesian or rho if polar
+//     * @param b is b if cartesian or theta if polar
+//     * @param cs coordinate system.
+//     */
+//    public Point(double a, double b, CoordinateSystem cs)
+//    {
+//        switch (cs)
+//        {
+//            case CARTESIAN:
+//                this.x = a;
+//                this.y = b;
+//                break;
+//            case POLAR:
+//                this.x = a * Math.cos(b);
+//                this.y = a * Math.sin(b);
+//                break;
+//        }
+//
+//    }
+//}
